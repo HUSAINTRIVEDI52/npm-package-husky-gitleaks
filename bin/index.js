@@ -12,9 +12,10 @@ const command = process.argv[2];
 
 // Detect how this script is being invoked:
 // 1. Manual CLI:   npx secure-husky-setup init  → command === 'init'
-// 2. postinstall:  npm install                   → npm_lifecycle_event === 'postinstall', no command arg
+// 2. Manual CLI:   npx secure-husky-setup       → no command; defaults to init
+// 3. postinstall:  npm install                   → npm_lifecycle_event === 'postinstall', no command arg
 const isPostInstall = process.env.npm_lifecycle_event === 'postinstall';
-const shouldRun = command === 'init' || isPostInstall;
+const shouldRun = !command || command === 'init' || isPostInstall;
 
 if (isPostInstall) {
   // Try to find the user's project directory (where they ran npm install)
@@ -28,7 +29,7 @@ if (isPostInstall) {
 
 (async () => {
   if (!shouldRun) {
-    console.log("Usage: secure-husky-setup init");
+    console.log("Usage: secure-husky-setup [init]");
     process.exit(0);
   }
 
